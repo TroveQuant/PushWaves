@@ -2067,22 +2067,22 @@ if __name__ == "__main__":
     main()
 
     # 发送html
-    HTML_PATH = "output/strategy_dashboard.html"
-    try:
-        with open(HTML_PATH, "r", encoding="utf-8") as f:
-            HTML_BODY = f.read()
-    except Exception:
-        HTML_BODY = "<p>Please find the attached file.</p>"
-    # HTML_BODY = "<p>Please find the attached file.</p>"
-    for re in pw.RECIPIENTS:
-        print(f"Sending {HTML_PATH} to {re}")
-        email_sender_v2.send_html_email_with_attachment(
-            smtp_server="smtp.gmail.com",
-            smtp_port=587,
-            sender_email=pw.SENDER_EMAIL,    # your gmail
-            password=pw.google_email_app_password,  # your gmail app password
-            receiver_email=re,  # recipient email
-            subject="Whitney George Daily Backtest Report",
-            html_body=HTML_BODY,
-            attachment_path=HTML_PATH
-        )
+    # HTML_PATH = "output/strategy_dashboard.html"
+    # try:
+    #     with open(HTML_PATH, "r", encoding="utf-8") as f:
+    #         HTML_BODY = f.read()
+    # except Exception:
+    #     HTML_BODY = "<p>Please find the attached file.</p>"
+    # # HTML_BODY = "<p>Please find the attached file.</p>"
+    # for re in pw.RECIPIENTS:
+    #     print(f"Sending {HTML_PATH} to {re}")
+    #     email_sender_v2.send_html_email_with_attachment(
+    #         smtp_server="smtp.gmail.com",
+    #         smtp_port=587,
+    #         sender_email=pw.SENDER_EMAIL,    # your gmail
+    #         password=pw.google_email_app_password,  # your gmail app password
+    #         receiver_email=re,  # recipient email
+    #         subject="Whitney George Daily Backtest Report",
+    #         html_body=HTML_BODY,
+    #         attachment_path=HTML_PATH
+    #     )
