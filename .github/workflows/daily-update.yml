@@ -1,0 +1,59 @@
+name: Run PushWave Daily
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 11 * * 1-5"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pushwave-daily-update
+  cancel-in-progress: true
+
+jobs:
+  run-pushwave:
+    runs-on: ubuntu-latest
+
+    env:
+      SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+      RECIPIENTS_str: ${{ secrets.RECIPIENTS_str }}
+      GOOGLE_EMAIL_APP_PASSWORD: ${{ secrets.GOOGLE_EMAIL_APP_PASSWORD }}
+      TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      MPLBACKEND: Agg
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run PushWave
+        run: printf '1\n' | python PushWave.py
+
+      - name: Commit and push updated results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add PushWave.py data_parquet stock_lists output
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Update PushWave results"
+          git push origin HEAD:${GITHUB_REF_NAME}
